@@ -31,3 +31,19 @@ export async function POST(req: Request) {
     return new Response("Internal Server Error", { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const allProducts = await db.product.findMany();
+
+    return new Response(JSON.stringify(allProducts), {
+      status: 200,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return new Response(error.message, { status: 500 });
+    }
+
+    return new Response("Internal Server Error", { status: 500 });
+  }
+}
