@@ -2,9 +2,11 @@ import { FC } from "react";
 import styles from "@/styles/PizzaList.module.css";
 import PizzaCard from "./ui/PizzaCard";
 
-interface PizzaListProps {}
+interface PizzaListProps {
+  pizzaList: Product[];
+}
 
-const PizzaList: FC<PizzaListProps> = ({}) => {
+const PizzaList: FC<PizzaListProps> = ({ pizzaList }) => {
   return (
     <div className="py-[20px] px-[10px] flex flex-col items-center">
       <h1 className="block text-[2em] my-[0.67em] mx-0 font-bold text-center">
@@ -16,14 +18,12 @@ const PizzaList: FC<PizzaListProps> = ({}) => {
         dolor sit amet, consectutur adipiscing elit.
       </p>
       <div className="flex items-center justify-center flex-wrap">
-        <PizzaCard />
-        <PizzaCard />
-        <PizzaCard />
-        <PizzaCard />
-        <PizzaCard />
-        <PizzaCard />
-        <PizzaCard />
-        <PizzaCard />
+        {pizzaList?.map((pizza) => (
+          <PizzaCard
+            key={pizza.id}
+            pizza={pizza}
+          />
+        ))}
       </div>
     </div>
   );
