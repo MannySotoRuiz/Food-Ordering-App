@@ -7,18 +7,31 @@ export async function POST(req: Request) {
       img,
       desc,
       prices,
-      extraOption,
+      extraOptions,
     }: {
       title: string;
       img: string;
       desc: string;
       prices: number[];
-      extraOption: ExtraOption;
+      extraOptions: ExtraOption;
     } = await req.json();
 
-    const newProductObj = { title, img, desc, prices, extraOption };
-
-    const newProduct = await db.product.create({ data: newProductObj });
+    const newProduct = await db.product.create({
+      data: {
+        title,
+        img,
+        desc,
+        prices,
+        extraOptions: {
+          createMany: {
+            data: extraOptions,
+          },
+        },
+      },
+      include: {
+        extraOptions: true,
+      },
+    });
 
     return new Response(JSON.stringify(newProduct), {
       status: 200,
