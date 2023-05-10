@@ -12,7 +12,7 @@ const page: FC<pageProps> = ({}) => {
     if (index - status > 1) return styles.undone;
   };
   return (
-    <div className="flex p-[50px]">
+    <div className="flex p-[50px] flex-col sm:flex-row">
       <div className={styles.left}>
         <div className="stylesRow">
           <table className={styles.table}>
@@ -25,7 +25,7 @@ const page: FC<pageProps> = ({}) => {
               </tr>
             </tbody>
             <tbody>
-              <tr className={styles.tableRow}>
+              <tr className={styles.tr}>
                 <td>
                   <span className={styles.id}>123456789</span>
                 </td>
@@ -46,7 +46,7 @@ const page: FC<pageProps> = ({}) => {
         </div>
 
         {/* second row */}
-        <div className="flex justify-between w-4/5">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center sm:justify-between w-full sm:w-4/5">
           {/* "flex flex-col items-center" */}
           <div className={statusClass(0)}>
             <Image

@@ -20,7 +20,7 @@ const page: FC<pageProps> = ({}) => {
             </tr>
           </tbody>
           <tbody>
-            <tr className={styles.tableRow}>
+            <tr className={styles.tr}>
               <td className={styles.productImage}>
                 <div className={styles.imgContainer}>
                   <Image
@@ -49,7 +49,7 @@ const page: FC<pageProps> = ({}) => {
                 <span className={styles.total}>$39.80</span>
               </td>
             </tr>
-            <tr className={styles.tableRow}>
+            <tr className={styles.tr}>
               <td className={styles.productImage}>
                 <div className={styles.imgContainer}>
                   <Image
