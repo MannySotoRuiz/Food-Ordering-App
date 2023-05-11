@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { FC, useState, ChangeEvent } from "react";
+import { useAppDispatch } from "../redux/hooks";
+import { addProduct } from "../redux/cartSlice";
 
 interface PizzaDisplayProps {
   pizza: Product;
@@ -12,6 +14,7 @@ const PizzaDisplay: FC<PizzaDisplayProps> = ({ pizza }) => {
   const [size, setSize] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
   const [extras, setExtras] = useState<ExtraOption[]>([]);
+  const dispatch = useAppDispatch();
 
   const changePrice = (number: number) => setPrice(price + number);
 
@@ -38,6 +41,10 @@ const PizzaDisplay: FC<PizzaDisplayProps> = ({ pizza }) => {
 
   const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuantity(parseInt(e.target.value));
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addProduct({ pizza, extras, price, quantity }));
   };
 
   return (
@@ -133,7 +140,10 @@ const PizzaDisplay: FC<PizzaDisplayProps> = ({ pizza }) => {
             defaultValue={1}
             className="w-[50px] h-[50px] sm:h-[35px] py-[10px] px-[20px] sm:py-0 sm:px-0 border border-black"
           />
-          <button className="h-[50px] sm:h-[35px] ml-[10px] bg-[#d1411e] text-white border-none font-medium cursor-pointer py-[10px] px-[20px] sm:py-0 sm:px-1">
+          <button
+            onClick={handleAddToCart}
+            className="h-[50px] sm:h-[35px] ml-[10px] bg-[#d1411e] text-white border-none font-medium cursor-pointer py-[10px] px-[20px] sm:py-0 sm:px-1"
+          >
             Add to cart
           </button>
         </div>
