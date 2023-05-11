@@ -50,4 +50,6 @@ export const { addProduct, reset } = cartSlice.actions;
 
 export const selectQuantity = (state: RootState) => state.cart.quantity;
 
+export const selectCart = (state: RootState) => state.cart;
+
 export default cartSlice.reducer;

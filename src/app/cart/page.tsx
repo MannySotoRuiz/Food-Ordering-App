@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
-import { FC } from "react";
 import styles from "@/styles/Cart.module.css";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectCart } from "@/redux/cartSlice";
 
-interface pageProps {}
+export default function CartPage() {
+  const dispatch = useAppDispatch();
+  const cart = useAppSelector(selectCart);
 
-const page: FC<pageProps> = ({}) => {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
@@ -20,64 +24,53 @@ const page: FC<pageProps> = ({}) => {
             </tr>
           </tbody>
           <tbody>
-            <tr className={styles.tr}>
-              <td className={styles.productImage}>
-                <div className={styles.imgContainer}>
-                  <Image
-                    src="/img/pizza.png"
-                    fill={true}
-                    style={{ objectFit: "cover" }}
-                    alt=""
-                  />
-                </div>
-              </td>
-              <td>
-                <span className={styles.name}>CORALZO</span>
-              </td>
-              <td>
-                <span className={styles.extras}>
-                  Double ingredient, spicy sauce
-                </span>
-              </td>
-              <td>
-                <span className={styles.price}>$19.90</span>
-              </td>
-              <td>
-                <span className={styles.quantity}>2</span>
-              </td>
-              <td>
-                <span className={styles.total}>$39.80</span>
-              </td>
-            </tr>
-            <tr className={styles.tr}>
-              <td className={styles.productImage}>
-                <div className={styles.imgContainer}>
-                  <Image
-                    src="/img/pizza.png"
-                    fill={true}
-                    style={{ objectFit: "cover" }}
-                    alt=""
-                  />
-                </div>
-              </td>
-              <td>
-                <span className={styles.name}>CORALZO</span>
-              </td>
-              <td>
-                <span className={styles.extras}>
-                  Double ingredient, spicy sauce
-                </span>
-              </td>
-              <td>
-                <span className={styles.price}>$19.90</span>
-              </td>
-              <td>
-                <span className={styles.quantity}>2</span>
-              </td>
-              <td>
-                <span className={styles.total}>$39.80</span>
-              </td>
-            </tr>
+            {cart.products.map((item, idx) => {
+              const { extras, pizza } = item;
+              return (
+                <tr
+                  className={styles.tr}
+                  key={idx}
+                >
+                  <td className={styles.productImage}>
+                    <div className={styles.imgContainer}>
+                      <Image
+                        src={pizza.img}
+                        fill={true}
+                        style={{ objectFit: "cover" }}
+                        alt={pizza.title}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <span className={styles.name}>{pizza.title}</span>
+                  </td>
+                  <td>
+                    <span className={styles.extras}>
+                      {extras.map((extra, idx) => {
+                        const ifLastInList = idx === extras.length - 1;
+                        return (
+                          <span key={idx}>
+                            {extra.text}
+                            {!ifLastInList && ", "}
+                          </span>
+                        );
+                      })}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={styles.price}>${item.price}</span>
+                  </td>
+                  <td>
+                    <span className={styles.quantity}>{item.quantity}</span>
+                  </td>
+                  <td>
+                    <span className={styles.total}>
+                      ${item.price * item.quantity}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -87,19 +80,17 @@ const page: FC<pageProps> = ({}) => {
             CART TOTAL
           </h2>
           <div className={styles.totalText}>
-            <b className={styles.totalTextTitle}>Subtotal:</b>$79.60
+            <b className={styles.totalTextTitle}>Subtotal:</b>${cart.total}
           </div>
           <div className={styles.totalText}>
             <b className={styles.totalTextTitle}>Discount:</b>$0.00
           </div>
           <div className={styles.totalText}>
-            <b className={styles.totalTextTitle}>Total:</b>$79.60
+            <b className={styles.totalTextTitle}>Total:</b>${cart.total}
           </div>
           <button className={styles.button}>CHECKOUT NOW!</button>
         </div>
       </div>
     </div>
   );
-};
-
-export default page;
+}
