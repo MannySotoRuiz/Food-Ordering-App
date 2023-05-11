@@ -1,10 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import { FC } from "react";
 import styles from "@/styles/Navbar.module.css";
+import { selectQuantity } from "../redux/cartSlice";
+import { useAppSelector } from "../redux/hooks";
 
 interface NavbarProps {}
 
 const Navbar: FC<NavbarProps> = ({}) => {
+  const quantity = useAppSelector(selectQuantity);
+
   return (
     <div className={styles.container}>
       <div className={styles.item}>
@@ -45,7 +51,7 @@ const Navbar: FC<NavbarProps> = ({}) => {
             width={30}
             height={30}
           />
-          <div className={styles.counter}>2</div>
+          <div className={styles.counter}>{quantity}</div>
         </div>
       </div>
     </div>
