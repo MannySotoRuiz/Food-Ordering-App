@@ -3,23 +3,42 @@
 import Image from "next/image";
 import styles from "@/styles/Cart.module.css";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { selectCart } from "@/redux/cartSlice";
+import { reset, selectCart } from "@/redux/cartSlice";
 import {
   PayPalScriptProvider,
   PayPalButtons,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import OrderDetail from "@/components/OrderDetail";
 
 export default function CartPage() {
   const [open, setOpen] = useState<boolean>(false);
+  const [cash, setCash] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const cart = useAppSelector(selectCart);
+  const router = useRouter();
 
   // This values are the props in the UI
-  const amount = "2";
+  const amount = cart.total.toString();
   const currency = "USD";
   const style = { layout: "vertical" };
+
+  const createOrder = async (data: any) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/orders", data);
+      if (res.status === 200) {
+        router.push(`/orders/${res.data.id}`);
+        dispatch(reset());
+      } else {
+        throw new Error("Error. Please try again later.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Custom component to wrap the PayPalButtons and handle currency changes
   const ButtonWrapper = ({
@@ -73,7 +92,14 @@ export default function CartPage() {
           onApprove={async function (data, actions: any) {
             return actions.order.capture().then(function (details: any) {
               // Your code here after capture the order
-              console.log(details);
+              // console.log(details);
+              const shipping = details.purchase_units[0].shipping;
+              createOrder({
+                customer: shipping.name.full_name,
+                address: shipping.address.address_line_1,
+                total: cart.total,
+                method: 1,
+              });
             });
           }}
         />
@@ -162,7 +188,12 @@ export default function CartPage() {
           </div>
           {open ? (
             <div className={styles.paymentMethods}>
-              <button className={styles.payButton}>PAY WITH CASH</button>
+              <button
+                className={styles.payButton}
+                onClick={() => setCash(true)}
+              >
+                PAY WITH CASH
+              </button>
               <PayPalScriptProvider
                 options={{
                   "client-id":
@@ -188,6 +219,13 @@ export default function CartPage() {
           {/* <button className={styles.button}>CHECKOUT NOW!</button> */}
         </div>
       </div>
+      {cash && (
+        <OrderDetail
+          total={cart.total}
+          createOrder={createOrder}
+          setCash={setCash}
+        />
+      )}
     </div>
   );
 }

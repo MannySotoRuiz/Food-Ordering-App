@@ -1,16 +1,31 @@
-import { FC } from "react";
 import styles from "@/styles/Order.module.css";
 import Image from "next/image";
 
-interface pageProps {}
+async function getData(id: string) {
+  const res = await fetch(`http://localhost:3000/api/orders/${id}`, {
+    next: { revalidate: 60 },
+  });
 
-const page: FC<pageProps> = ({}) => {
-  const status = 0;
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return res.json();
+}
+
+export default async function OrdersPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const order = (await getData(params.id)) as Order;
+  const status = order.status;
   const statusClass = (index: number) => {
     if (index - status < 1) return styles.done;
     if (index - status === 1) return styles.inProgress;
     if (index - status > 1) return styles.undone;
   };
+
   return (
     <div className="flex p-[50px] flex-col sm:flex-row">
       <div className={styles.left}>
@@ -27,18 +42,16 @@ const page: FC<pageProps> = ({}) => {
             <tbody>
               <tr className={styles.tr}>
                 <td>
-                  <span className={styles.id}>123456789</span>
+                  <span className={styles.id}>{order.id}</span>
                 </td>
                 <td>
-                  <span className={styles.name}>Manny Soto Ruiz</span>
+                  <span className={styles.name}>{order.customer}</span>
                 </td>
                 <td>
-                  <span className={styles.address}>
-                    2 Ridge Rd, Carmel, NY 10512
-                  </span>
+                  <span className={styles.address}>{order.address}</span>
                 </td>
                 <td>
-                  <span className={styles.total}>$39.80</span>
+                  <span className={styles.total}>${order.total}</span>
                 </td>
               </tr>
             </tbody>
@@ -129,13 +142,13 @@ const page: FC<pageProps> = ({}) => {
             CART TOTAL
           </h2>
           <div className={styles.totalText}>
-            <b className={styles.totalTextTitle}>Subtotal:</b>$79.60
+            <b className={styles.totalTextTitle}>Subtotal:</b>${order.total}
           </div>
           <div className={styles.totalText}>
             <b className={styles.totalTextTitle}>Discount:</b>$0.00
           </div>
           <div className={styles.totalText}>
-            <b className={styles.totalTextTitle}>Total:</b>$79.60
+            <b className={styles.totalTextTitle}>Total:</b>${order.total}
           </div>
           <button
             disabled
@@ -147,6 +160,4 @@ const page: FC<pageProps> = ({}) => {
       </div>
     </div>
   );
-};
-
-export default page;
+}
