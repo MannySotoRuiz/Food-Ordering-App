@@ -36,9 +36,9 @@ const Navbar: FC<NavbarProps> = ({}) => {
           <li className={styles.listItem}>Products</li>
           <li className={styles.listItem}>Menu</li>
           <Image
-            src="/img/logo.png"
+            src="/img/logo1.png"
             alt=""
-            width={160}
+            width={120}
             height={69}
           />
           <li className={styles.listItem}>Events</li>

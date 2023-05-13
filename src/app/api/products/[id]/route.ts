@@ -26,3 +26,26 @@ export async function GET(
     return new Response("Internal Server Error", { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const deleteProduct = await db.product.delete({
+      where: { id },
+    });
+    return new Response(JSON.stringify(deleteProduct), {
+      status: 200,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+      });
+    }
+
+    return new Response("Internal Server Error", { status: 500 });
+  }
+}
